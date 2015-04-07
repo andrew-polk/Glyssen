@@ -128,5 +128,29 @@ namespace ControlDataIntegrityTests
 				Environment.NewLine +
 				missingDefaultCharacters.OnePerLineWithIndent());
 		}
+
+		[Test]
+		public void DataIntegrity_NoDuplicateBcvCharacterData()
+		{
+			ISet<CharacterVerse> uniqueCharacterVerses = new HashSet<CharacterVerse>(new BcvCharacterEqualityComparer());
+			IEnumerable<CharacterVerse> duplicateCharacterVerses =
+				ControlCharacterVerseData.Singleton.GetAllQuoteInfo().Where(cv => !uniqueCharacterVerses.Add(cv)).ToList();
+			Assert.False(duplicateCharacterVerses.Any(),
+				"Duplicate Character-Verse data:" +
+				Environment.NewLine +
+				duplicateCharacterVerses.Select(cv => cv.BcvRef + ", " + cv.Character).OnePerLineWithIndent());
+		}
+
+		[Test]
+		public void DataIntegrity_NoDuplicateBcvCharacterData2()
+		{
+			ISet<CharacterVerse> uniqueCharacterVerses = new HashSet<CharacterVerse>(new BcvCharacterEqualityComparer());
+			IEnumerable<CharacterVerse> duplicateCharacterVerses =
+				ControlCharacterVerseData.Singleton.GetAllQuoteInfo().Where(cv => !uniqueCharacterVerses.Add(cv));
+			Assert.False(duplicateCharacterVerses.Any(),
+				"Duplicate Character-Verse data:" +
+				Environment.NewLine +
+				duplicateCharacterVerses.Select(cv => cv.BcvRef + ", " + cv.Character).OnePerLineWithIndent());
+		}
 	}
 }
