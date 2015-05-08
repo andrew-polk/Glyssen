@@ -101,6 +101,7 @@ namespace ProtoScript.Character
 		/// <summary>Character ID prefix for intro material</summary>
 		protected const string kIntroPrefix = "intro-";
 
+		private readonly CharacterDeliveryEqualityComparer m_characterDeliveryEqualityComparer = new CharacterDeliveryEqualityComparer();
 		private IList<CharacterVerse> m_data = new List<CharacterVerse>();
 		private ILookup<int, CharacterVerse> m_lookup;
 		private IEnumerable<CharacterVerse> m_uniqueCharacterAndDeliveries;
@@ -138,10 +139,13 @@ namespace ProtoScript.Character
 				for (int i = start; i <= end; i++)
 					result = result.Union(m_lookup[i]);
 			}
-			if (finalVerse == 0 || result.Count() == 1)
+			if (finalVerse == 0)
 				return result;
+//			if (result.Count() == 1)
+//				return result;
 
 			var nextVerse = Math.Max(initialStartVerse, initialEndVerse) + 1;
+			var intersection = Enumerable.Empty<CharacterVerse>();
 			while (nextVerse <= finalVerse)
 			{
 				var verseRef = new VerseRef(bookId, chapter, nextVerse, versification);
@@ -152,14 +156,25 @@ namespace ProtoScript.Character
 					nextVerse++;
 					continue;
 				}
-				var intersection = nextResult.Intersect(result, new CharacterDeliveryEqualityComparer());
-				if (intersection.Count() == 1)
-				{
-					result = intersection;
-					break;
-				}
+//				if (!result.Any())
+//				{
+//					result = nextResult;
+//					nextVerse++;
+//					continue;
+//				}
+
+				intersection = nextResult.Intersect(intersection, m_characterDeliveryEqualityComparer);
+//				if (intersection.Count() == 1)
+//				{
+//					result = intersection;
+//					break;
+//				}
+				result = result.Union(nextResult, m_characterDeliveryEqualityComparer);
 				nextVerse++;
 			}
+
+			if (intersection.Count() == 1)
+				return intersection;
 			return result;
 		}
 

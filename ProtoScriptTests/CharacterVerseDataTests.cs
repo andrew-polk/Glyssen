@@ -65,6 +65,20 @@ namespace ProtoScriptTests
 			Assert.AreEqual("Mary Magdalene", character.Character);
 		}
 
+		[Test]
+		public void GetCharacters_ControlHasNoDataForInitialStartVerseButDoesForSecondVerse_FindsCharacterForSecondVerse()
+		{
+			var character = ControlCharacterVerseData.Singleton.GetCharacters("ACT", 11, 2, 0, 3).Single();
+			Assert.AreEqual("believers, circumcised", character.Character);
+		}
+
+		[Test]
+		public void GetCharacters_ControlHasNoDataForInitialStartVerseButDoesForThirdVerse_FindsCharacterForThirdVerse()
+		{
+			var character = ControlCharacterVerseData.Singleton.GetCharacters("ACT", 11, 1, 0, 3).Single();
+			Assert.AreEqual("believers, circumcised", character.Character);
+		}
+
 		[Test] public void GetCharacters_MoreThanOneWithNoDuplicates_ReturnsAll()
 		{
 			var characters = ControlCharacterVerseData.Singleton.GetCharacters("MRK", 6, 24).ToList();
@@ -74,9 +88,18 @@ namespace ProtoScriptTests
 		}
 
 		[Test]
-		public void GetCharacters_MultipleEntriesForSameCharacterWithDifferentDeliveries_ReturnsOneResultPerDelivery()
+		public void GetCharacters_TwoEntriesForSameCharacterWithDifferentDeliveries_ReturnsOneResultPerDelivery()
 		{
 			var characters = ControlCharacterVerseData.Singleton.GetCharacters("MRK", 15, 44).ToList();
+			Assert.AreEqual(2, characters.Count());
+			Assert.AreEqual(characters[0].Character, characters[1].Character);
+			Assert.AreNotEqual(characters[0].Delivery, characters[1].Delivery);
+		}
+
+		[Test]
+		public void GetCharacters_ThreeEntriesForSameCharacterWithTwoDifferentDeliveries_ReturnsOneResultPerDelivery()
+		{
+			var characters = ControlCharacterVerseData.Singleton.GetCharacters("MAT", 13, 54, 0, 56).ToList();
 			Assert.AreEqual(2, characters.Count());
 			Assert.AreEqual(characters[0].Character, characters[1].Character);
 			Assert.AreNotEqual(characters[0].Delivery, characters[1].Delivery);
@@ -96,6 +119,42 @@ namespace ProtoScriptTests
 			Assert.AreEqual(2, characters.Count());
 			Assert.AreEqual(1, characters.Count(c => c.Character == "God"));
 			Assert.AreEqual(1, characters.Count(c => c.Character == "Samuel"));
+		}
+
+		[Test]
+		public void GetCharacters_MultipleCharactersInMultipleVerses_NoCharacterInInitialStartVerse_ReturnsAmbiguous()
+		{
+			var characters = ControlCharacterVerseData.Singleton.GetCharacters("1SA", 8, 20, 0, 22);
+			Assert.AreEqual(2, characters.Count());
+			Assert.AreEqual(1, characters.Count(c => c.Character == "God"));
+			Assert.AreEqual(1, characters.Count(c => c.Character == "Samuel"));
+		}
+
+		[Test]
+		public void GetCharacters_CharactersInMultipleVerses_ReturnsAmbiguous()
+		{
+			var characters = ControlCharacterVerseData.Singleton.GetCharacters("1SA", 9, 5, 0, 6);
+			Assert.AreEqual(2, characters.Count());
+			Assert.AreEqual(1, characters.Count(c => c.Character == "Saul"));
+			Assert.AreEqual(1, characters.Count(c => c.Character == "servant of Saul"));
+		}
+
+		[Test]
+		public void GetCharacters_ThreeEntriesWithTwoDifferentCharacters_ReturnsOneEntryPerCharacter()
+		{
+			var characters = ControlCharacterVerseData.Singleton.GetCharacters("MAT", 12, 24, 0, 26);
+			Assert.AreEqual(2, characters.Count());
+			Assert.AreEqual(1, characters.Count(c => c.Character == "Pharisees 4"));
+			Assert.AreEqual(1, characters.Count(c => c.Character == "Jesus"));
+		}
+
+		[Test]
+		public void GetCharacters_CharactersInMultipleVerses_NoCharacterInInitialStartVerse_ReturnsAmbiguous()
+		{
+			var characters = ControlCharacterVerseData.Singleton.GetCharacters("1SA", 9, 4, 0, 6);
+			Assert.AreEqual(2, characters.Count());
+			Assert.AreEqual(1, characters.Count(c => c.Character == "Saul"));
+			Assert.AreEqual(1, characters.Count(c => c.Character == "servant of Saul"));
 		}
 
 		[Test]

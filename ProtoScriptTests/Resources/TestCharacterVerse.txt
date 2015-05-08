@@ -7526,8 +7526,9 @@ MAT	13	49	Jesus			Normal
 MAT	13	51	disciples, His			Dialogue
 MAT	13	51	Jesus	questioning		Dialogue
 MAT	13	52	Jesus			Dialogue
-MAT	13	54	men in synagogue 2	amazed		Dialogue
-MAT	13	55	men in synagogue 3	taking offense at Jesus' teaching		Normal
+MAT	13	54	men in Nazareth synagogue	amazed		Dialogue
+MAT	13	55	men in Nazareth synagogue	offended		Normal
+MAT	13	56	men in Nazareth synagogue	offended		Normal
 MAT	13	57	Jesus			Dialogue
 MAT	14	2	Herod Antipas (the tetrarch)	fearful		Normal
 MAT	14	4	John the Baptist	rebuke		Normal
