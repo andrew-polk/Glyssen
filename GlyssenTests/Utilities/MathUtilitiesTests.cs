@@ -1,4 +1,6 @@
-﻿using Glyssen.Utilities;
+﻿using System;
+using System.Numerics;
+using Glyssen.Utilities;
 using NUnit.Framework;
 
 namespace GlyssenTests.Utilities
@@ -37,6 +39,30 @@ namespace GlyssenTests.Utilities
 			Assert.AreEqual(99d, MathUtilities.PercentAsDouble(1, 0, 99));
 			Assert.AreEqual(100d, MathUtilities.PercentAsDouble(1, 0, 0));
 			Assert.AreEqual(100d, MathUtilities.PercentAsDouble(1, 0));
+		}
+
+		[Test]
+		public void Stirling_kGreaterThanN_ReturnsZero()
+		{
+			int n = 1;
+			int k = 2;
+			Assert.AreEqual(BigInteger.Zero, MathUtilities.Stirling(n, k));
+		}
+
+		[TestCase(0, 0, 1)]
+		[TestCase(1, 0, 0)]
+		[TestCase(100, 0, 0)]
+		[TestCase(1, 1, 1)]
+		[TestCase(2, 2, 1)]
+		[TestCase(2, 1, 1)]
+		[TestCase(1000, 1, 1)]
+		[TestCase(3, 2, 3)]
+		[TestCase(7, 3, 301)]
+		[TestCase(10, 5, 42525)]
+		[TestCase(300, 20, 42525)]
+		public void Stirling_ReturnsCorrectResults(int n, int k, int expectedResult)
+		{
+			Assert.AreEqual(new BigInteger(expectedResult), MathUtilities.Stirling(n, k));
 		}
 	}
 }
