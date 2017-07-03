@@ -7,7 +7,7 @@ namespace Glyssen
 {
 	public static class ScriptExporter
 	{
-		public static void MakeGlyssenScriptFile(Project project, IEnumerable<List<object>> data, string outputPath)
+		public static void MakeGlyssenScriptFile(Project project, IEnumerable<ProjectExporter.ExportRow> data, string outputPath)
 		{
 			var gs = new GlyssenScript(project.Metadata) {Script = new Script {Books = new List<ScriptBook>()}};
 
@@ -20,9 +20,9 @@ namespace Glyssen
 			List<ScriptBlock> blocks = new List<ScriptBlock>();
 			foreach (var row in data)
 			{
-				string blockBookCode = (string) row[ProjectExporter.GetColumnIndex(ExportColumn.BookId, project)];
-				int blockChapterNumber = (int) row[ProjectExporter.GetColumnIndex(ExportColumn.Chapter, project)];
-				string blockCharacterId = (string) row[ProjectExporter.GetColumnIndex(ExportColumn.CharacterId, project)];
+				string blockBookCode = row.BookId;
+				int blockChapterNumber = row.ChapterNumber;
+				string blockCharacterId = row.CharacterId;
 
 				if (blockChapterNumber != chapter)
 				{
@@ -41,36 +41,32 @@ namespace Glyssen
 				if (!project.IncludeCharacter(blockCharacterId))
 					continue;
 
-				string clipFilePath = null;
-				if (row.Count > iClipFileLink)
-					clipFilePath = (string)row[iClipFileLink];
-
 				// I don't see any point in exporting a block with no vernacular text
-				string vernacularText = (string) row[ProjectExporter.GetColumnIndex(ExportColumn.VernacularText, project)];
+				string vernacularText = row.Text;
 				if (!string.IsNullOrWhiteSpace(vernacularText))
 				{
 					var gsBlock = new ScriptBlock
 					{
-						Character = (string) row[ProjectExporter.GetColumnIndex(ExportColumn.CharacterId, project)],
-						File = clipFilePath,
+						Character = row.CharacterId,
+						File = row.ClipFilePath,
 						Id = blockId++,
 						Primary =
 							new Reference
 							{
 								LanguageCode = project.ReferenceText.LanguageLdml,
-								Text = (string) row[ProjectExporter.GetColumnIndex(ExportColumn.PrimaryReferenceText, project)]
+								Text = row.PrimaryReferenceText
 							},
 						Secondary =
 							new Reference
 							{
 								LanguageCode = project.ReferenceText.SecondaryReferenceText.LanguageLdml,
-								Text = (string) row[ProjectExporter.GetColumnIndex(ExportColumn.SecondaryReferenceText, project)]
+								Text = row.SecondaryReferenceText
 							},
-						Tag = (string) row[ProjectExporter.GetColumnIndex(ExportColumn.ParaTag, project)],
+						Tag = row.StyleTag,
 						Vernacular = new Vernacular {Text = vernacularText},
-						Verse = ((int) row[ProjectExporter.GetColumnIndex(ExportColumn.Verse, project)]).ToString(),
+						Verse = row.InitialStartVerseNumber.ToString()
 					};
-					var actor = (string) row[ProjectExporter.GetColumnIndex(ExportColumn.Actor, project)];
+					var actor = row.VoiceActor;
 					gsBlock.Actor = !string.IsNullOrEmpty(actor) ? actor : "unassigned";
 					Debug.Assert(gsBlock.Actor != "unassigned");
 
