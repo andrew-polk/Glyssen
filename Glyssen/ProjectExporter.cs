@@ -947,13 +947,13 @@ namespace Glyssen
 					list.Add(primaryRefBlock.GetPrimaryReferenceText(textOnly));
 				else
 					list.Add(null);
-			}
+				}
 			list.Add(block.GetText(false).Length);
 
 			if (!IsNullOrEmpty(outputDirectory) && !IsNullOrEmpty(clipFileProjectId))
 			{
 				list.Add(Path.Combine(outputDirectory, bookId, clipFileProjectId +
-					$"_{blockNumber:D5}_{bookId}_{block.ChapterNumber:D3}_{block.InitialStartVerseNumber:D3}.wav"));
+																$"_{blockNumber:D5}_{bookId}_{block.ChapterNumber:D3}_{block.InitialStartVerseNumber:D3}.wav"));
 			}
 			return list;
 		}
@@ -1078,6 +1078,379 @@ namespace Glyssen
 			public string SecondaryReferenceText { get; set; }
 			public int TextLength { get; set; }
 			public string ClipFilePath { get; set; }
+
+			public List<object> ToListOfObject(/*bool includeVoiceActors, bool hasLocalizedCharacterId,*/ bool includeDelivery, bool includeSecondaryDirectorsGuide)
+			{
+				// NOTE: if the order here changes, there may be changes needed in GenerateExcelFile
+
+				//int columnNumber = (int)column;
+				//if (column != ExportColumn.BlockId && !includeVoiceActors)
+				//	columnNumber--;
+				//if (column > ExportColumn.SecondaryReferenceText && !project.ReferenceText.HasSecondaryReferenceText)
+				//	columnNumber--;
+				//if (column > ExportColumn.CharacterId && LocalizationManager.UILanguageId != "en")
+				//	columnNumber++;
+				//if (column > ExportColumn.Delivery && !includeDelivery)
+				//	columnNumber--;
+				//return columnNumber;
+
+				List<object> list = new List<object>();
+				//list.Add(BlockNumber);
+				if (VoiceActor != null)//(includeVoiceActors)
+					list.Add(VoiceActor);
+				list.Add(StyleTag);
+				list.Add(BookId);
+				list.Add(ChapterNumber);
+				list.Add(InitialStartVerseNumber);
+				list.Add(CharacterId);
+				if (LocalizationManager.UILanguageId != "en")//(hasLocalizedCharacterId)
+					list.Add(LocalizedCharacterId);
+				if (includeDelivery)
+					list.Add(Delivery);
+				list.Add(Text);
+				list.Add(PrimaryReferenceText);
+				if (includeSecondaryDirectorsGuide)
+					list.Add(SecondaryReferenceText);
+				list.Add(TextLength);
+				if (ClipFilePath != null)
+					list.Add(ClipFilePath);
+				return list;
+			}
+		}
+
+		private ExportBlock GetExportDataForAnnotationNew(VerseAnnotation verseAnnotation, string bookId, int chapter, int verse)
+		{
+			var exportRow = new ExportBlock();
+			exportRow.BookId = bookId;
+			exportRow.ChapterNumber = chapter;
+			exportRow.InitialStartVerseNumber = verse;
+			var annotationInfo = verseAnnotation.Annotation.ToDisplay(AnnotationElementSeparator);
+			exportRow.PrimaryReferenceText = annotationInfo;
+			if (Project.ReferenceText.HasSecondaryReferenceText)
+				exportRow.SecondaryReferenceText = annotationInfo;
+			return exportRow;
+
+			//var row = new List<object>();
+			//row.Add(null);
+			//if (IncludeVoiceActors)
+			//	row.Add(null);
+			//row.Add(null);
+			//row.Add(bookId);
+			//row.Add(chapter);
+			//row.Add(verse);
+			//row.Add(null);
+			//if (LocalizationManager.UILanguageId != "en")
+			//	row.Add(null);
+			//row.Add(null);
+			//row.Add(null);
+			//var annotationInfo = verseAnnotation.Annotation.ToDisplay(AnnotationElementSeparator);
+			//row.Add(annotationInfo);
+			//if (Project.ReferenceText.HasSecondaryReferenceText)
+			//	row.Add(annotationInfo);
+			//row.Add(null);
+			//if (IncludeCreateClips)
+			//	row.Add(null);
+			//return row;
+		}
+
+		internal static List<object> GetExportDataForBlockNew(Block block, int blockNumber, string bookId,
+			VoiceActor.VoiceActor voiceActor, string singleVoiceNarratorOverride, bool useCharacterIdInScript,
+			bool includeDelivery, bool includeSecondaryDirectorsGuide, string outputDirectory, string clipFileProjectId,
+			bool textOnly = false)
+		{
+			return
+				GetExportRowForBlock(block, blockNumber, bookId, voiceActor, singleVoiceNarratorOverride, useCharacterIdInScript,
+					includeDelivery, includeSecondaryDirectorsGuide, outputDirectory, clipFileProjectId).ToListOfObject(includeDelivery, includeSecondaryDirectorsGuide);
+		}
+
+		private static ExportBlock GetExportRowForBlock(Block block, int blockNumber, string bookId,
+			VoiceActor.VoiceActor voiceActor, string singleVoiceNarratorOverride, bool useCharacterIdInScript,
+			bool includeDelivery, bool includeSecondaryDirectorsGuide, string outputDirectory, string clipFileProjectId,
+			bool scriptureTextOnly = false)
+		{
+			ExportBlock row = new ExportBlock();
+			List<object> list = new List<object>();
+			list.Add(blockNumber);
+			//row.BlockNumber = blockNumber;
+			if (voiceActor != null)
+			{
+				list.Add(voiceActor.Name);
+				row.VoiceActor = voiceActor.Name;
+			}
+			list.Add(block.StyleTag);
+			row.StyleTag = block.StyleTag;
+			list.Add(bookId);
+			row.BookId = bookId;
+			list.Add(block.ChapterNumber);
+			row.ChapterNumber = block.ChapterNumber;
+			list.Add(block.InitialStartVerseNumber);
+			row.InitialStartVerseNumber = block.InitialStartVerseNumber;
+			string characterId;
+			if (singleVoiceNarratorOverride != null)
+				characterId = singleVoiceNarratorOverride;
+			else
+				characterId = useCharacterIdInScript ? block.CharacterIdInScript : block.CharacterId;
+			list.Add(CharacterVerseData.IsCharacterStandard(characterId) ? CharacterVerseData.GetStandardCharacterIdAsEnglish(characterId) : characterId);
+			row.CharacterId = CharacterVerseData.IsCharacterStandard(characterId) ? CharacterVerseData.GetStandardCharacterIdAsEnglish(characterId) : characterId;
+
+			// add a column for the localized character id
+			if (LocalizationManager.UILanguageId != "en")
+			{
+				list.Add(CharacterVerseData.GetCharacterNameForUi(characterId));
+				row.LocalizedCharacterId = CharacterVerseData.GetCharacterNameForUi(characterId);
+			}
+
+			if (includeDelivery)
+			{
+				list.Add(block.Delivery);
+				row.Delivery = block.Delivery;
+			}
+			row.Text = block.GetText(!scriptureTextOnly);
+			row.PrimaryReferenceText = block.GetPrimaryReferenceText(scriptureTextOnly);
+			if (includeSecondaryDirectorsGuide)
+			{
+				var primaryRefBlock = (block.MatchesReferenceText) ? block.ReferenceBlocks.Single() : null;
+				if (primaryRefBlock != null && primaryRefBlock.MatchesReferenceText)
+				{
+					row.SecondaryReferenceText = primaryRefBlock.GetPrimaryReferenceText(scriptureTextOnly);
+				}
+				else
+				{
+					list.Add(null);
+					row.SecondaryReferenceText = null;
+				}
+			}
+			list.Add(block.GetText(false).Length);
+			row.TextLength = block.GetText(false).Length;
+
+			if (!IsNullOrEmpty(outputDirectory) && !IsNullOrEmpty(clipFileProjectId))
+			{
+				list.Add(Path.Combine(outputDirectory, bookId, clipFileProjectId +
+																$"_{blockNumber:D5}_{bookId}_{block.ChapterNumber:D3}_{block.InitialStartVerseNumber:D3}.wav"));
+				row.ClipFilePath = Path.Combine(outputDirectory, bookId, clipFileProjectId +
+																		$"_{blockNumber:D5}_{bookId}_{block.ChapterNumber:D3}_{block.InitialStartVerseNumber:D3}.wav");
+			}
+			return row;
+		}
+
+		// internal for testing
+		internal List<List<object>> GetExportDataNew(string bookId = null, int voiceActorId = -1)
+		{
+			var result = new List<List<object>>();
+			foreach (var exportRow in GetExportBlocks(bookId, voiceActorId))
+			{
+				result.Add(exportRow.ToListOfObject(m_includeDelivery, Project.ReferenceText.HasSecondaryReferenceText));
+			}
+			return result;
+		}
+
+
+		internal List<ExportBlock> GetExportBlocksNew(string bookId = null, int voiceActorId = -1, bool textOnly = false)
+		{
+			var result = new List<ExportBlock>();
+
+			int blockNumber = 1;
+
+			IEnumerable<BookScript> booksToInclude = bookId == null
+				? m_booksToExport
+				: m_booksToExport.Where(b => b.BookId == bookId);
+
+			var projectClipFileId = (IncludeCreateClips) ?
+				!IsNullOrWhiteSpace(Project.AudioStockNumber) ? Project.AudioStockNumber : Project.Name.Replace(" ", "_") :
+				null;
+
+			foreach (var book in booksToInclude)
+			{
+				string singleVoiceNarratorOverride = null;
+				if (book.SingleVoice)
+					singleVoiceNarratorOverride = CharacterVerseData.GetStandardCharacterId(book.BookId,
+						CharacterVerseData.StandardCharacter.Narrator);
+				List<Block> pendingMismatchedReferenceBlocks = null;
+				foreach (var block in book.GetScriptBlocks())
+				{
+					if (block.IsChapterAnnouncement && block.ChapterNumber == 1)
+					{
+						if (Project.SkipChapterAnnouncementForFirstChapter)
+							continue;
+						if (Project.SkipChapterAnnouncementForSingleChapterBooks &&
+							Project.Versification.GetLastChapter(BCVRef.BookToNumber(book.BookId)) == 1)
+							continue;
+					}
+
+					if (!Project.DramatizationPreferences.IncludeCharacter(block.CharacterId))
+						continue;
+
+					VoiceActor.VoiceActor voiceActor = null;
+					bool includeInOutput = true;
+					if (IncludeVoiceActors)
+					{
+						voiceActor = Project.GetVoiceActorForCharacter(singleVoiceNarratorOverride ?? block.CharacterIdInScript) ?? GetDummyActor();
+						includeInOutput = voiceActorId == -1 || voiceActor.Id == voiceActorId;
+					}
+
+					if (includeInOutput)
+					{
+						if (pendingMismatchedReferenceBlocks != null && block.ReferenceBlocks.Any())
+						{
+							foreach (var refBlock in pendingMismatchedReferenceBlocks)
+								result.Add(CreateExportBlockFromReferenceBlock(refBlock, book.BookId, textOnly));
+							pendingMismatchedReferenceBlocks = null;
+						}
+						result.Add(GetExportRowForBlock(block, blockNumber++, book.BookId, voiceActor, singleVoiceNarratorOverride,
+							IncludeVoiceActors, m_includeDelivery,
+							Project.ReferenceText.HasSecondaryReferenceText, ClipDirectory, projectClipFileId, textOnly));
+						if (!block.MatchesReferenceText && block.ReferenceBlocks.Any())
+							pendingMismatchedReferenceBlocks = block.ReferenceBlocks;
+					}
+				}
+				if (pendingMismatchedReferenceBlocks != null)
+				{
+					foreach (var refBlock in pendingMismatchedReferenceBlocks)
+						result.Add(CreateExportBlockFromReferenceBlock(refBlock, book.BookId, textOnly));
+				}
+			}
+			if (bookId == null && voiceActorId == -1 && !textOnly)
+				AddAnnotations(result);
+			return result;
+		}
+
+
+		private void AddAnnotations(List<ExportBlock> data)
+		{
+			var annotationRowIndexes = new List<int>();
+
+			int lastIndexOfPreviousVerse = 0;
+			BCVRef previousReferenceTextVerse = null;
+			IEnumerable<VerseAnnotation> annotationsForPreviousVerse = null;
+			for (int i = 0; i < data.Count; i++)
+			{
+				var row = data[i];
+				if (HasReferenceText(row))
+				{
+					var referenceTextVerse = GetBcvRefForRow(row);
+					if (referenceTextVerse != previousReferenceTextVerse)
+					{
+						if (previousReferenceTextVerse != null && annotationsForPreviousVerse != null)
+						{
+							foreach (var verseAnnotation in annotationsForPreviousVerse.Where(va => va.Annotation is Pause))
+							{
+								if (ExportAnnotationsInSeparateRows)
+								{
+									var rowIndex = lastIndexOfPreviousVerse + 1 + verseAnnotation.Offset;
+									data.Insert(rowIndex,
+										GetExportDataForAnnotationNew(verseAnnotation, BCVRef.NumberToBookCode(previousReferenceTextVerse.Book),
+											previousReferenceTextVerse.Chapter, previousReferenceTextVerse.Verse));
+									i++;
+									annotationRowIndexes.Add(rowIndex);
+								}
+								else
+									annotationRowIndexes.Add(AddAnnotationData(data, lastIndexOfPreviousVerse, verseAnnotation));
+							}
+						}
+						if (referenceTextVerse != previousReferenceTextVerse)
+						{
+							var annotationsForVerse = ControlAnnotations.Singleton.GetAnnotationsForVerse(referenceTextVerse);
+							foreach (var verseAnnotation in annotationsForVerse.Where(va => va.Annotation is Sound))
+							{
+								if (ExportAnnotationsInSeparateRows)
+								{
+									var rowIndex = i++ + verseAnnotation.Offset;
+									data.Insert(rowIndex,
+										GetExportDataForAnnotationNew(verseAnnotation, BCVRef.NumberToBookCode(referenceTextVerse.Book),
+											referenceTextVerse.Chapter, referenceTextVerse.Verse));
+									annotationRowIndexes.Add(rowIndex);
+								}
+								else
+									annotationRowIndexes.Add(AddAnnotationData(data, i, verseAnnotation));
+							}
+
+							annotationsForPreviousVerse = annotationsForVerse;
+							previousReferenceTextVerse = referenceTextVerse;
+						}
+					}
+					lastIndexOfPreviousVerse = i;
+				}
+			}
+
+			m_annotatedRowIndexes = annotationRowIndexes;
+		}
+
+
+		private int AddAnnotationData(List<ExportBlock> data, int relativeIndex, VerseAnnotation verseAnnotation)
+		{
+			Func<string, string, string> modify = (verseAnnotation.Annotation is Sound)
+				? (Func<string, string, string>)PrependAnnotationInfo : (Func<string, string, string>)AppendAnnotationInfo;
+
+			var annotationInfo = verseAnnotation.Annotation.ToDisplay(AnnotationElementSeparator);
+
+			ExportBlock rowToModify;
+			string text;
+			int rowIndex = relativeIndex + verseAnnotation.Offset;
+			do
+			{
+				rowToModify = data[rowIndex];
+				text = rowToModify.PrimaryReferenceText;
+			} while (text == null && --rowIndex >= 0);
+			Debug.Assert(text != null, "We should have been able to find a preceding row with a non-empty reference text");
+
+			rowToModify.PrimaryReferenceText = modify(text, annotationInfo);
+			if (Project.ReferenceText.HasSecondaryReferenceText)
+			{
+				rowToModify.SecondaryReferenceText = modify(rowToModify.SecondaryReferenceText ?? Empty, annotationInfo);
+			}
+
+			return rowIndex;
+		}
+
+		private bool HasReferenceText(ExportBlock row)
+		{
+			return !IsNullOrEmpty(row.PrimaryReferenceText);
+		}
+
+		private BCVRef GetBcvRefForRow(ExportBlock row)
+		{
+			return new BCVRef(BCVRef.BookToNumber(row.BookId), row.ChapterNumber, row.InitialStartVerseNumber);
+		}
+
+		private ExportBlock CreateExportBlockFromReferenceBlock(Block refBlock, string bookId, bool textOnly)
+		{
+			var exportRow = new ExportBlock();
+			exportRow.StyleTag = refBlock.StyleTag;
+			exportRow.BookId = bookId;
+			exportRow.ChapterNumber = refBlock.ChapterNumber;
+			exportRow.InitialStartVerseNumber = refBlock.InitialStartVerseNumber;
+			exportRow.CharacterId = CharacterVerseData.IsCharacterStandard(refBlock.CharacterId)
+				? CharacterVerseData.GetStandardCharacterIdAsEnglish(refBlock.CharacterId)
+				: refBlock.CharacterId;
+			if (m_includeDelivery)
+				exportRow.Delivery = refBlock.Delivery;
+			exportRow.PrimaryReferenceText = refBlock.GetText(!textOnly, !textOnly);
+			if (Project.ReferenceText.HasSecondaryReferenceText)
+				exportRow.SecondaryReferenceText = refBlock.GetPrimaryReferenceText(textOnly);
+
+			//var row = new List<object>();
+			//row.Add(null);
+			//if (IncludeVoiceActors)
+			//	row.Add(null);
+			//row.Add(refBlock.StyleTag);
+			//row.Add(bookId);
+			//row.Add(refBlock.ChapterNumber);
+			//row.Add(refBlock.InitialStartVerseNumber);
+			//row.Add((CharacterVerseData.IsCharacterStandard(refBlock.CharacterId) ?
+			//	CharacterVerseData.GetStandardCharacterIdAsEnglish(refBlock.CharacterId) : refBlock.CharacterId));
+			//if (LocalizationManager.UILanguageId != "en")
+			//	row.Add(null);
+			//if (m_includeDelivery)
+			//	row.Add(refBlock.Delivery);
+			//row.Add(null);
+			//row.Add(refBlock.GetText(!ScriptureTextOnly, !ScriptureTextOnly));
+			//if (Project.ReferenceText.HasSecondaryReferenceText)
+			//	row.Add(refBlock.GetPrimaryReferenceText(ScriptureTextOnly));
+			//row.Add(0);
+			//if (IncludeCreateClips)
+			//	row.Add(null);
+			//return row;
+			return exportRow;
 		}
 	}
 }
