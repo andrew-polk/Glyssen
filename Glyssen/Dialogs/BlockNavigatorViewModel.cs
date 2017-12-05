@@ -1023,6 +1023,19 @@ namespace Glyssen.Dialogs
 				return lastMatchup.OriginalBlocks.Any(b => b.CharacterIsUnclear()) ||
 					(lastMatchup.OriginalBlocks.Count() > 1 && !lastMatchup.CorrelatedBlocks.All(b => b.MatchesReferenceText));
 			}
+			if (lastMatchup != null && lastMatchup.OriginalBlocks.Contains(block))
+				return false;
+			bool retVal = IsRelevant_Internal(block, ignoreExcludeUserConfirmed);
+			if (retVal && AttemptRefBlockMatchup)
+			{
+				lastMatchup = m_project.ReferenceText.GetBlocksForVerseMatchedToReferenceText(CurrentBook,
+					m_navigator.GetIndicesOfSpecificBlock(block).BlockIndex, m_project.Versification);
+			}
+			return retVal;
+		}
+
+		private bool IsRelevant_Internal(Block block, bool ignoreExcludeUserConfirmed)
+		{
 			if (block.IsContinuationOfPreviousBlockQuote)
 				return false;
 			if (!ignoreExcludeUserConfirmed && (Mode & BlocksToDisplay.ExcludeUserConfirmed) > 0 && block.UserConfirmed)
