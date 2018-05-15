@@ -1,0 +1,688 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SIL.DblBundle</name>
+    </assembly>
+    <members>
+        <member name="T:SIL.DblBundle.DblBundleFileUtils">
+            <summary>
+            File utilities for DBL Bundles
+            </summary>
+        </member>
+        <member name="F:SIL.DblBundle.DblBundleFileUtils.kDblBundleExtension">
+            <summary>Extension used on DBL bundles</summary>
+        </member>
+        <member name="F:SIL.DblBundle.DblBundleFileUtils.kVersificationFileName">
+            <summary>File that contains versification</summary>
+        </member>
+        <member name="F:SIL.DblBundle.DblBundleFileUtils.kLdmlFileName">
+            <summary>File that contains language definition</summary>
+        </member>
+        <member name="F:SIL.DblBundle.DblBundleFileUtils.kUnzippedLdmlFileExtension">
+            <summary>File extension for language definition files</summary>
+        </member>
+        <member name="M:SIL.DblBundle.DblBundleFileUtils.ExtractToTempDirectory(System.String)">
+            <summary>
+            Extract the contents of a zip file located in the specified path to a temp directory
+            </summary>
+            <returns>path of the temporary directory</returns>
+        </member>
+        <member name="T:SIL.DblBundle.IBundle">
+            <summary>
+            Interface representing a DBL bundle
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.IBundle.Id">
+            <summary>
+            Unique hex ID for the DBL bundle
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.IBundle.LanguageIso">
+            <summary>
+            3-letter ISO 639-2 code for the language of the DBL bundle
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.IBundle.Name">
+            <summary>
+            The name of the publication
+            </summary>
+        </member>
+        <member name="T:SIL.DblBundle.Bundle`2">
+            <summary>
+            A DBL Bundle
+            </summary>
+        </member>
+        <member name="F:SIL.DblBundle.Bundle`2.m_pathToZippedBundle">
+            <summary>temporary directory path where the zip bundle is extracted</summary>
+        </member>
+        <member name="M:SIL.DblBundle.Bundle`2.#ctor(System.String)">
+            <summary>
+            Create a DBL Bundle
+            </summary>
+            <param name="pathToZippedBundle"></param>
+            <exception cref="T:System.ApplicationException"></exception>
+        </member>
+        <member name="P:SIL.DblBundle.Bundle`2.DefaultLanguageIsoCode">
+            <summary>
+            Typically, this should be set to SIL.WritingSystems.WellKnownSubtags.UnlistedLanguage by the client.
+            We would have probably just hard-coded to that, but we didn't want to have to reference SIL.WritingSystems
+            just for that. Anyway, this gives a bit more versatility.
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Bundle`2.BundlePath">
+            <summary>
+            Path to the original (unzipped) DBL bundle
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Bundle`2.Metadata">
+            <summary>
+            Representation of the metadata.xml file included in the bundle
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Bundle`2.Id">
+            <summary>
+            Unique hex ID for the DBL bundle
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Bundle`2.LanguageIso">
+            <summary>
+            3-letter ISO 639-2 code for the language of the DBL bundle. If the metadata's language does
+            not identify an ISO 639-2 code, this returns the default language ISO code, which clients
+            are encouraged to set to "qaa" or some other value that will allow it to be properly
+            treated as "unknown".
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Bundle`2.Name">
+            <summary>
+            The name of the publication
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Bundle`2.PathToUnzippedDirectory">
+            <summary>
+            (Temporary) path of the unzipped contents of the DBL bundle
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Bundle`2.Dispose">
+            <summary>
+            Dispose method for this class.
+            </summary>
+        </member>
+        <member name="T:SIL.DblBundle.DblMetadata">
+            <summary>
+            Information about a Digital Bible Library bundle
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.DblMetadata.Id">
+            <summary>Identification for bundle</summary>
+        </member>
+        <member name="P:SIL.DblBundle.DblMetadata.Type">
+            <summary>Identification for bundle--only text bundles are currently supported</summary>
+        </member>
+        <member name="P:SIL.DblBundle.DblMetadata.TypeVersion">
+            <summary>Version of the release bundle type</summary>
+        </member>
+        <member name="P:SIL.DblBundle.DblMetadata.Revision">
+            <summary>Revision of the data for the entry contained within this bundle</summary>
+        </member>
+        <member name="P:SIL.DblBundle.DblMetadata.IsTextReleaseBundle">
+            <summary>Gets whether bundle is for text</summary>
+        </member>
+        <member name="T:SIL.DblBundle.DblMetadataBase`1">
+            <summary>
+            This is abstract to enforce Bundle taking a subclass (not allowing DblMetadata). DblMetadata
+            itself cannot be abstract because in the event of a loading error, we need to deserialize it
+            to properly report the situation to the user.
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.DblMetadataBase`1.Load``1(System.String,System.Exception@)">
+            <summary>
+            Loads information about a Digital Bible Library bundle from the specified projectFilePath.
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.DblMetadataBase`1.InitializeMetadata">
+            <summary>
+            Can be overridden to provide sub-class-specific behavior on load
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.DblMetadataBase`1.Language">
+            <summary>
+            The language element of the metadata. Can be any class of type DblMetadataLangauge.
+            </summary>
+        </member>
+        <member name="T:SIL.DblBundle.IProjectInfo">
+            <summary>
+            Project information for a Digital Bible Library text bundle.
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.IProjectInfo.Name">
+            <summary>Name of the project</summary>
+        </member>
+        <member name="P:SIL.DblBundle.IProjectInfo.Id">
+            <summary>Project Id</summary>
+        </member>
+        <member name="P:SIL.DblBundle.IProjectInfo.Language">
+            <summary>Language used in the project</summary>
+        </member>
+        <member name="T:SIL.DblBundle.IStylesheet">
+            <summary>
+            Interface for the stylesheet.
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.IStylesheet.GetStyle(System.String)">
+            <summary>Gets the style for specfiied ID</summary>
+        </member>
+        <member name="T:SIL.DblBundle.IStyle">
+            <summary>
+            Interface methods for a style
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.IStyle.Id">
+            <summary>Style ID</summary>
+        </member>
+        <member name="P:SIL.DblBundle.IStyle.IsVerseText">
+            <summary>Gets whether style is for verse text</summary>
+        </member>
+        <member name="P:SIL.DblBundle.IStyle.IsPublishable">
+            <summary>Gets whether style is for publishable content</summary>
+        </member>
+        <member name="P:SIL.DblBundle.IStyle.IsChapterLabel">
+            <summary>Gets whether style is for a chapter label</summary>
+        </member>
+        <member name="P:SIL.DblBundle.IStyle.IsParallelPassageReference">
+            <summary>Gets whether the style is for a parallel passage reference</summary>
+        </member>
+        <member name="P:SIL.DblBundle.IStyle.IsInlineQuotationReference">
+            <summary>Gets whether the style is for an inline quotation reference</summary>
+        </member>
+        <member name="P:SIL.DblBundle.IStyle.HoldsBookNameOrAbbreviation">
+            <summary>Gets whether the style contains information about the name or abbreviation for the book</summary>
+        </member>
+        <member name="T:SIL.DblBundle.Style">
+            <summary>
+            A specific style defined in a stylesheet
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Style.Id">
+            <summary>Style ID</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Style.IsVerseText">
+            <summary>Gets whether style is for verse text</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Style.IsPublishable">
+            <summary>Gets whether style is for publishable content</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Style.IsChapterLabel">
+            <summary>Gets whether style is for a chapter label</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Style.IsParallelPassageReference">
+            <summary>Gets whether the style is for a parallel passage reference</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Style.IsInlineQuotationReference">
+            <summary>Gets whether the style is for an inline quotation reference</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Style.HoldsBookNameOrAbbreviation">
+            <summary>
+            True if the style contains a book name or book abbreviation
+            </summary>
+        </member>
+        <member name="T:SIL.DblBundle.Stylesheet">
+            <summary>
+            Stylesheet shipped with a DBL Bundle
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Stylesheet.Load(System.String,System.Exception@)">
+            <summary>
+            Load the stylesheet at the given path
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Stylesheet.DefaultFontSize">
+            <summary>
+            The default font size if not found in the style sheet. Default can be overridden by the caller. Set it before calling Load.
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Stylesheet.Properties">
+            <summary>
+            property elements in the stylesheet
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Stylesheet.GetStyle(System.String)">
+            <summary>
+            Get the style from the stylesheet based on the styleId
+            </summary>
+            <param name="styleId"></param>
+            <returns>An IStyle object with the given styleId</returns>
+        </member>
+        <member name="P:SIL.DblBundle.Stylesheet.FontFamily">
+            <summary>
+            The font family as set in the stylesheet
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Stylesheet.FontSizeInPoints">
+            <summary>
+            The font size (in pt) as set in the stylesheet
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Stylesheet.Styles">
+            <summary>
+            All the styles defined in the stylesheet
+            </summary>
+        </member>
+        <member name="T:SIL.DblBundle.StylesheetProperty">
+            <summary>
+            A stylesheet property element
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.StylesheetProperty.Name">
+            <summary>
+            Name of the property
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.StylesheetProperty.Unit">
+            <summary>
+            Unit of the property (optional)
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.StylesheetProperty.Value">
+            <summary>
+            Value of the property
+            </summary>
+        </member>
+        <member name="T:SIL.DblBundle.Text.DblTextMetadata`1">
+            <summary>
+            Information about a Digitial Bible Library bundle
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblTextMetadata`1.Identification">
+            <summary>Name and id for DBL bundle</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblTextMetadata`1.Copyright">
+            <summary>The short written copyright statement which should accompany any publication of the scripture text.</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblTextMetadata`1.Promotion">
+            <summary>Contains child elements for supplying background and promotion information related to the scripture text.</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblTextMetadata`1.ArchiveStatus">
+            <summary>Date when DBL bundle was updated and originally archived</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblTextMetadata`1.AvailableBooks">
+            <summary>List of books in the DBL bundle</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblTextMetadata`1.AvailableBibleBooks">
+            <summary>
+            Gets the books that are available in this DBL bundle.
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblTextMetadata`1.Canons">
+            <summary>
+            Gets the canons used with this DBL bundle.
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Text.DblTextMetadata`1.GetAsXml">
+            <summary>
+            Gets information about the DBL bundle in XML format.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblTextMetadata`1.Name">
+            <summary>
+            Gets the name of the DBL bundle.
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Text.DblTextMetadata`1.ToString">
+            <summary>
+            Gets the text representation for this DBL bundle as its name.
+            </summary>
+        </member>
+        <member name="T:SIL.DblBundle.Text.DblMetadataIdentification">
+            <summary>
+            Identification information for a DBL bundle.
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataIdentification.Name">
+            <summary>Preferred/common name used to refer to the scripture text (English)</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataIdentification.NameLocal">
+            <summary>Preferred/common name used to refer to the scripture text (vernacular).</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataIdentification.SystemIds">
+            <summary>Identification for a DBL bundle</summary>
+        </member>
+        <member name="M:SIL.DblBundle.Text.DblMetadataIdentification.ToString">
+            <summary>Text representation for the DBL bundle</summary>
+        </member>
+        <member name="T:SIL.DblBundle.Text.DblMetadataLanguage">
+            <summary>
+            Information about the language used in a Digital Bible Library bundle.
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataLanguage.Iso">
+            <summary>ISO 639-2 code for the language</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataLanguage.Name">
+            <summary>Language name</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataLanguage.Ldml">
+            <summary>
+            Unicode language identifier. Not required, but may be needed in order to distinguish the language of the 
+            scripture text from a text in the same language,but from another region, or using another writing system 
+            (e.g. en-US vs en-GB). Paratext generated DBL text bundles are supplied this value from the ‘Language Identifier’ 
+            field of the selected project’s properties. 
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataLanguage.Rod">
+            <summary>
+            Dialect code taken from the Harvest Information Sysyems (HIS) Registry of Dialects (ROD). 
+            A ROD code may be needed(in addition to language/ldml) in order to distinguish the specific dialect of the 
+            language of the scripture text from others within the DBL.
+            References: http://globalrecordings.net/research/rod
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataLanguage.Script">
+            <summary>Script used for the writing system</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataLanguage.ScriptDirection">
+            <summary>Direction in which script is written (LTR or RTL)</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataLanguage.Numerals">
+            <summary>
+            Preferred numbering system to use for rendering digits in the scripture text. 
+            Publishers should use this information for providing the correct presentation of chapter and verse numbers, 
+            which are always provided in USX &lt;chapter&gt; and &lt;verse&gt; ‘num’ attributes in Arabic script.
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataLanguage.DisplayName">
+            <summary>Name of language displayed in the UI</summary>
+        </member>
+        <member name="M:SIL.DblBundle.Text.DblMetadataLanguage.ToString">
+            <summary>Text representation of bundle language</summary>
+        </member>
+        <member name="T:SIL.DblBundle.Text.DblMetadataCopyright">
+            <summary>Information about the project copyright for the DBL bundle</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataCopyright.Statement">
+            <summary>Copyright statement in text and XML format</summary>
+        </member>
+        <member name="T:SIL.DblBundle.Text.DblMetadataPromotion">
+            <summary>Introductory (promotional/background) information about the scripture text translation.</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataPromotion.PromoVersionInfo">
+            <summary>Indicates the specific content format which this element contains.</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataPromotion.PromoEmail">
+            <summary>
+            A promotional email message text which can be used to send to a new user of the text 
+            (for example - when the text is downloaded within a publishing application for offline use).
+            </summary>
+        </member>
+        <member name="T:SIL.DblBundle.Text.DblMetadataXhtmlContentNode">
+            <summary>
+            Contains child elements for supplying one or more bookList elements in which divisions and book codes are supplied 
+            in the correct order for known publications of the scripture text.
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Text.DblMetadataXhtmlContentNode.#ctor">
+            <summary>
+            Constructs a DBL content node
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataXhtmlContentNode.ContentType">
+            <summary>Type of content, currently xhtml is supported</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataXhtmlContentNode.InternalNodes">
+            <summary>Descendant nodes within this content node</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataXhtmlContentNode.Text">
+            <summary></summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataXhtmlContentNode.Xhtml">
+            <summary>XHTML for all nodes contained within this content node</summary>
+        </member>
+        <member name="T:SIL.DblBundle.Text.DblMetadataSystemId">
+            <summary>
+            A unique ID used to refer to the scripture text resource within a specific organizational database or software system.
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataSystemId.Type">
+            <summary>Valid types include: tms, paratext, reap, biblica</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataSystemId.ChangeSetId">
+            <summary>
+            This attribute is probably only relevant to ad-hoc bundles created by Paratext.
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataSystemId.Id">
+            <summary>
+            A unique ID used to refer to the scripture text resource within a specific organizational database or software system.
+            </summary>
+        </member>
+        <member name="T:SIL.DblBundle.Text.DblMetadataArchiveStatus">
+            <summary>Information about when bundle was created or updated</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataArchiveStatus.DateArchived">
+            <summary>Creation date for archive</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataArchiveStatus.DateUpdated">
+            <summary>Date when archive was last updated</summary>
+        </member>
+        <member name="T:SIL.DblBundle.Text.DblMetadataCanon">
+            <summary>Information about a Scripture canon</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataCanon.Default">
+            <summary>Gets whether this canon is a default canon</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataCanon.CanonId">
+            <summary>Unique id for the canon</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataCanon.Name">
+            <summary>Name of the canon</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataCanon.NameLocal">
+            <summary>Localized name of the canon</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataCanon.Abbreviation">
+            <summary>Abbreviation for the canon</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataCanon.AbbreviationLocal">
+            <summary>Localized abbreviation for the canon</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataCanon.Description">
+            <summary>Description for the canon</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataCanon.DescriptionLocal">
+            <summary>Localized description for the canon</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataCanon.CanonBooks">
+            <summary>List of books included in the canon</summary>
+        </member>
+        <member name="T:SIL.DblBundle.Text.DblMetadataCanonBook">
+            <summary>Information about a book in the canon</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.DblMetadataCanonBook.Code">
+            <summary>Three-letter code for a book in the canon</summary>
+        </member>
+        <member name="T:SIL.DblBundle.Text.Book">
+            <summary>
+            Contains child elements for supplying long, short, and 
+            abbr (abbreviation) vernacular names for Biblical books in the scripture text.
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Text.Book.#ctor">
+            <summary>Constructor for a DBL bundle book</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.Book.Code">
+            <summary>Three-letter book code for book</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.Book.LongName">
+            <summary>Vernacular text for the long form of the name for the Biblical book.</summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.Book.ShortName">
+            <summary>
+            Vernacular text for the shorter form of the name for the Biblical book. 
+            This is the text typically used for the running header reference text in a printed volume, or 
+            for the text to appear for the book name in a digital navigation (menu) system.
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.Book.Abbreviation">
+            <summary>
+            Vernacular text for the abbreviated form of the name for the Biblical book. 
+            This is the text typically used within reference lists found in cross references, indexes, or concordances.
+            </summary>
+        </member>
+        <member name="T:SIL.DblBundle.Text.ITextBundle">
+            <summary>
+            Interface representing a DBL Text Release Bundle
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.ITextBundle.Stylesheet">
+            <summary>
+            Defines the styles for this bundle
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.ITextBundle.WritingSystemDefinition">
+            <summary>
+            Defines the writing system definition for this bundle
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Text.ITextBundle.TryGetBook(System.String,SIL.DblBundle.Usx.UsxDocument@)">
+            <summary>
+            Try to get the book as a UsxDocument
+            </summary>
+            <returns>True if the book exists, false otherwise</returns>
+        </member>
+        <member name="P:SIL.DblBundle.Text.ITextBundle.UsxBooksToInclude">
+            <summary>
+            Books which are included and have valid data and metadata
+            </summary>
+        </member>
+        <member name="T:SIL.DblBundle.Text.TextBundle`2">
+            <summary>
+            A DBL Text Release Bundle
+            </summary>
+        </member>
+        <member name="F:SIL.DblBundle.Text.TextBundle`2.m_books">
+            <summary>mapping from the book ID to a USX document for the book</summary>
+        </member>
+        <member name="M:SIL.DblBundle.Text.TextBundle`2.#ctor(System.String)">
+            <summary>
+            Create a new DBL Text Release Bundle from the given zip file
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.TextBundle`2.Stylesheet">
+            <summary>
+            Defines the styles for this bundle
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.TextBundle`2.WritingSystemDefinition">
+            <summary>
+            Defines the writing system definition for this bundle
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.TextBundle`2.Name">
+            <summary>
+            The name of the publication
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Text.TextBundle`2.UsxBooksToInclude">
+            <summary>
+            Books which are included and have valid data and metadata
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Text.TextBundle`2.CopyVersificationFile(System.String)">
+            <summary>
+            Copy the versification file from the text bundle to destinationPath
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Text.TextBundle`2.CopyFontFiles(System.String)">
+            <summary>
+            Copies any font files (*.ttf) in the bundle to the given destination directory
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Text.TextBundle`2.ContainsLdmlFile">
+            <summary>
+            <returns>true if an LDML file exists in the bundle, false otherwise</returns>
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Text.TextBundle`2.CopyLdmlFile(System.String)">
+            <summary>
+            Copies ldml.xml from the text bundle to the destinationPath (if it exists)
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Text.TextBundle`2.TryGetBook(System.String,SIL.DblBundle.Usx.UsxDocument@)">
+            <summary>
+            Try to get the book as a UsxDocument
+            </summary>
+            <returns>True if the book exists, false otherwise</returns>
+        </member>
+        <member name="T:SIL.DblBundle.Usx.UsxDocument">
+            <summary>
+            Class to support processing of a USX document (Scripture book in XML format).
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Usx.UsxDocument.#ctor(System.Xml.XmlDocument)">
+            <summary>
+            Create a USX document from an XmlDocument.
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Usx.UsxDocument.#ctor(System.String)">
+            <summary>
+            Create a USX document from the specified file.
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Usx.UsxDocument.BookId">
+            <summary>
+            Gets the three-letter book ID for the book.
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Usx.UsxDocument.GetChaptersAndParas">
+            <summary>
+            Gets a list of paragraph and chapter nodes in the book.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:SIL.DblBundle.Usx.UsxDocument.XmlDocument">
+            <summary>
+            Gets the XmlDocument for the book.
+            </summary>
+        </member>
+        <member name="T:SIL.DblBundle.Usx.UsxNode">
+            <summary>
+            An XML node in a USX file (Scripture file in XML format)
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Usx.UsxNode.#ctor(System.Xml.XmlNode)">
+            <summary>
+            Constructs a USX XML node
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Usx.UsxNode.Node">
+            <summary>
+            This XML node
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Usx.UsxNode.StyleTag">
+            <summary>
+            Gets style applied to current node
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Usx.UsxNode.ChildNodes">
+            <summary>
+            List of nodes that are children of this node.
+            </summary>
+        </member>
+        <member name="T:SIL.DblBundle.Usx.UsxChapter">
+            <summary>
+            A USX node that specifies the chapter
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Usx.UsxChapter.#ctor(System.Xml.XmlNode)">
+            <summary>
+            Creates a chapter XML node 
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Usx.UsxChapter.ChapterNumber">
+            <summary>
+            Gets the chapter number
+            </summary>
+        </member>
+    </members>
+</doc>

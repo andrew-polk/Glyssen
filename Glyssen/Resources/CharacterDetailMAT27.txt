@@ -1,0 +1,16 @@
+#Character ID	Speaker ID	Max Speakers	Gender	Age	Status	Comment	Reference Comment
+"bystanders at Calvary, some"	3	-1		Adult			MAT 27:47 & MRK 15:35
+"bystanders at Calvary, the rest"	4	-1		Adult			MAT 27:49
+centurion at crucifixion	19	1	Male	Adult			MAT 27:54 <-(1 more)-> LUK 23:47
+chief priests		-1	Male				MAT 27:6 <-(6 more)-> JHN 19:21
+crowd before Pilate	3	-1		Adult			MAT 27:21 <-(7 more)-> LUK 23:21
+elders		-1	Male	Elder			RUT 4:11 <-(2 more)-> 2CH 10:7
+Jesus	7	1	Male	Adult	Y		MAT 3:15 <-(2101 more)-> REV 22:20
+Judas Iscariot	3	1	Male				MAT 26:15 <-(8 more)-> JHN 12:5
+passers by	3	-1					LAM 2:15 <-(2 more)-> MRK 15:30
+Pharisees		-1	Male				MAT 9:11 <-(14 more)-> ACT 23:9
+Pilate	2	1	Male				MAT 27:11 <-(42 more)-> JHN 19:22
+Pilate's wife	24	1	Female				MAT 27:19
+scripture	13	-1					2CH 25:4 <-(224 more)-> REV 19:15
+"soldiers, Roman"	4	-1	Male	Adult			MAT 27:29 <-(4 more)-> JHN 19:24
+teachers of religious law		-1	Male				MAT 9:3 <-(3 more)-> LUK 20:39

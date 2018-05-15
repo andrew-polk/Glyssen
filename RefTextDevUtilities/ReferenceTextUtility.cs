@@ -28,6 +28,7 @@ namespace Glyssen.RefTextDevUtilities
 		private const string kChapterHeader = "Cp";
 		private const string kVerseHeader = "Vs";
 		private const string kCharacterHeader = "CHARACTER";
+		private const string kSpeakerNumberHeader = "SPK #";
 		private const string kEnglishHeader = "ENGLISH";
 		public const string kTempFolderPrefix = "New";
 
@@ -514,7 +515,7 @@ namespace Glyssen.RefTextDevUtilities
 							if (int.Parse(referenceTextRow.Verse) != existingEnglishRefBlock.InitialStartVerseNumber)
 							{
 								WriteOutput($"Verse numbers do not match. Book: {referenceTextRow.Book}, Ch: {referenceTextRow.Chapter}, " +
-									$"Excell: {referenceTextRow.Verse}, Existing: {existingEnglishRefBlock.InitialStartVerseNumber}", true);
+									$"Excel: {referenceTextRow.Verse}, Existing: {existingEnglishRefBlock.InitialStartVerseNumber}", true);
 							}
 
 							var newBlock = new Block(existingEnglishRefBlock.StyleTag, int.Parse(referenceTextRow.Chapter), int.Parse(referenceTextRow.Verse))
@@ -696,7 +697,7 @@ namespace Glyssen.RefTextDevUtilities
 			{
 				var worksheet = xls.Workbook.Worksheets["Sheet1"];
 
-				string bookCol = null, chapterCol = null, verseCol = null, characterCol = null;
+				string bookCol = null, chapterCol = null, verseCol = null, characterCol = null, speakerNumberCol = null;
 
 				var cells = worksheet.Cells;
 				var rowData = cells.GroupBy(c => c.Start.Row).ToList();
@@ -722,6 +723,9 @@ namespace Glyssen.RefTextDevUtilities
 									break;
 								case kCharacterHeader:
 									characterCol = col;
+									break;
+								case kSpeakerNumberHeader:
+									speakerNumberCol = col;
 									break;
 								case kEnglishHeader: // English is required and must come first!
 									allLanguages[NormalizeLanguageColumnHeaderName(value)] = col;
@@ -764,7 +768,8 @@ namespace Glyssen.RefTextDevUtilities
 						ConvertFcbhBookCodeToSilBookCode((string)cells[bookCol + row].Value),
 						((double)cells[chapterCol + row].Value).ToString(CultureInfo.InvariantCulture),
 						verseStr,
-						(string)cells[characterCol + row].Value,
+						(string)cells[speakerNumberCol + row].Value,
+						(string)cells[speakerNumberCol + row].Value,
 						allLanguages.ToDictionary(kvp => kvp.Key, kvp => cells[kvp.Value + row].Value.ToString())));
 				}
 			}
@@ -814,12 +819,15 @@ namespace Glyssen.RefTextDevUtilities
 
 			sb.Clear();
 			foreach (var glyssenToFcbhIdsEntry in glyssenToFcbhIds)
-				if (glyssenToFcbhIdsEntry.Value.Count > 1 ||
-					CharacterVerseData.IsCharacterOfType(glyssenToFcbhIdsEntry.Key, CharacterVerseData.StandardCharacter.Narrator) ||
-					glyssenToFcbhIdsEntry.Value.Any(c => c.StartsWith("Narr_0")))
-				{
-					sb.Append(string.Format("{0}\t{1}", glyssenToFcbhIdsEntry.Key, glyssenToFcbhIdsEntry.Value.TabSeparated())).Append(Environment.NewLine);
-				}
+			{
+				//if (glyssenToFcbhIdsEntry.Value.Count > 1 ||
+				//	CharacterVerseData.IsCharacterOfType(glyssenToFcbhIdsEntry.Key, CharacterVerseData.StandardCharacter.Narrator) ||
+				//	glyssenToFcbhIdsEntry.Value.Any(c => c.StartsWith("Narr_0")))
+				//{
+					sb.Append($"{glyssenToFcbhIdsEntry.Key}\t{glyssenToFcbhIdsEntry.Value.TabSeparated()}")
+						.Append(Environment.NewLine);
+				//}
+			}
 			path = Path.Combine(kOutputDirForCharacterMapping, kOutputFileForGlyssenToFcbhMultiMap);
 			WriteOutput($"Writing {path}");
 			File.WriteAllText(path, sb.ToString());
@@ -893,6 +901,7 @@ namespace Glyssen.RefTextDevUtilities
 			var existingStr = existingBlock.GetText(true);
 			var excelStrWithoutAnnotations = Regex.Replace(excelStr, " \\|\\|\\|.*?\\|\\|\\| ", "");
 			excelStrWithoutAnnotations = Regex.Replace(excelStrWithoutAnnotations, "{[^0-9]+.*?}", "");
+			excelStrWithoutAnnotations = excelStrWithoutAnnotations.Trim();
 
 			if (ComparisonSensitivity == Ignore.AllDifferencesExceptAlphaNumericText)
 			{

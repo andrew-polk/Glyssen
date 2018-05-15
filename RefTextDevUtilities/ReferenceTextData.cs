@@ -66,13 +66,14 @@ namespace Glyssen.RefTextDevUtilities
 	{
 		private readonly Dictionary<string, string> m_text;
 
-		public ReferenceTextRow(string book, string chapter, string verse, string characterId, Dictionary<string, string> text)
+		public ReferenceTextRow(string book, string chapter, string verse, string characterId, string speakerNum, Dictionary<string, string> text)
 		{
 			m_text = text;
 			Book = book;
 			Chapter = chapter;
 			Verse = verse;
 			CharacterId = characterId;
+			SpeakerNum = speakerNum;
 			m_text = text;
 			if (!m_text.ContainsKey("English"))
 				throw new ArgumentException("English is required", nameof(text));
@@ -82,6 +83,7 @@ namespace Glyssen.RefTextDevUtilities
 		public string Chapter { get; set; }
 		public string Verse { get; set; }
 		public string CharacterId { get; set; }
+		public string SpeakerNum { get; set; }
 		public string English => m_text["English"];
 
 		public string GetText(string language)
@@ -91,7 +93,7 @@ namespace Glyssen.RefTextDevUtilities
 
 		public override string ToString()
 		{
-			return string.Format("{0} {1} {2} {3} {4}", Book, Chapter, Verse, CharacterId, English);
+			return $"{Book} {Chapter} {Verse} {CharacterId} {English}";
 		}
 	}
 }

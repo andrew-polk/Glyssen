@@ -1,0 +1,219 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SIL.DblBundle.Tests</name>
+    </assembly>
+    <members>
+        <member name="T:SIL.DblBundle.Tests.BundleTests">
+            <summary>
+            Tests for a Digital Bible Library text bundle.
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Tests.BundleTests.TestFixtureSetup">
+            <summary>
+            Setup for test fixture.
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Tests.BundleTests.LanguageIso_LanguageCodeSpecifiedInMetadata_ReturnsLanguageCode">
+            <summary>
+            Tests getting language code from metadata.
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Tests.BundleTests.LanguageIso_NoLanguageCodeSpecified_ReturnsCodeForUnlistedLanguage">
+            <summary>
+            Tests getting language code when no language code is specified.
+            </summary>
+        </member>
+        <member name="T:SIL.DblBundle.Tests.TestMetadata">
+            <summary>
+            Version that thwarts normal initialization of metadata
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Tests.TestMetadata.InitializeMetadata">
+            <summary>
+            Creates empty Metadata for testing
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Tests.TestMetadata.Name">
+            <summary>
+            Gets name test value
+            </summary>
+        </member>
+        <member name="T:SIL.DblBundle.Tests.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Tests.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Tests.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Tests.Properties.Resources.English_lds">
+            <summary>
+              Looks up a localized resource of type System.Byte[].
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Tests.Properties.Resources.ldml_xml">
+             <summary>
+               Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+            &lt;ldml&gt;
+            	&lt;identity&gt;
+            		&lt;version number=&quot;&quot; /&gt;
+            		&lt;generation date=&quot;2015-07-09T20:55:53Z&quot; /&gt;
+            		&lt;language type=&quot;qaa&quot; /&gt;
+            	&lt;/identity&gt;
+            	&lt;delimiters&gt;
+            		&lt;quotationStart&gt;“&lt;/quotationStart&gt;
+            		&lt;quotationEnd&gt;”&lt;/quotationEnd&gt;
+            		&lt;alternateQuotationStart&gt;‘&lt;/alternateQuotationStart&gt;
+            		&lt;alternateQuotationEnd&gt;’&lt;/alternateQuotationEnd&gt;
+            		&lt;special xmlns:sil=&quot;urn://www.sil.org/ldml/0.1&quot;&gt;
+            			&lt;sil:quotation-marks&gt;
+            				&lt;sil:quotationContinue&gt;“&lt;/sil:quotationContinue&gt;
+            				&lt;sil:alt [rest of string was truncated]&quot;;.
+             </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Tests.Properties.Resources.MAT_usx">
+            <summary>
+              Looks up a localized resource of type System.Byte[].
+            </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Tests.Properties.Resources.metadata_xml">
+             <summary>
+               Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+            &lt;DBLMetadata type=&quot;text&quot; typeVersion=&quot;1.4&quot; id=&quot;ce61dd3decd6b8a8&quot; revision=&quot;0&quot;&gt;
+              &lt;identification&gt;
+                &lt;name&gt;Test Bundle Publication&lt;/name&gt;
+                &lt;nameLocal&gt;&lt;/nameLocal&gt;
+                &lt;abbreviation&gt;&lt;/abbreviation&gt;
+                &lt;abbreviationLocal&gt;&lt;/abbreviationLocal&gt;
+                &lt;scope&gt;&lt;/scope&gt;
+                &lt;description&gt;&lt;/description&gt;
+                &lt;dateCompleted&gt;&lt;/dateCompleted&gt;
+                &lt;systemId type=&quot;gbc&quot;&gt;&lt;/systemId&gt;
+                &lt;systemId type=&quot;tms&quot;&gt;&lt;/systemId&gt;
+                &lt;systemId type=&quot;reap&quot;&gt;&lt;/systemId&gt;
+                &lt;systemId t [rest of string was truncated]&quot;;.
+             </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Tests.Properties.Resources.styles_xml">
+             <summary>
+               Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+            &lt;stylesheet&gt;
+              &lt;property name=&quot;font-family&quot;&gt;Cambria&lt;/property&gt;
+              &lt;property name=&quot;font-size&quot; unit=&quot;pt&quot;&gt;14&lt;/property&gt;
+              &lt;style id=&quot;id&quot; publishable=&quot;false&quot; versetext=&quot;false&quot;&gt;
+                &lt;name&gt;id - File - Identification&lt;/name&gt;
+                &lt;description&gt;File identification information (BOOKID, FILENAME, EDITOR, MODIFICATION DATE)&lt;/description&gt;
+                &lt;property name=&quot;text-align&quot;&gt;left&lt;/property&gt;
+              &lt;/style&gt;
+              &lt;style id=&quot;h&quot; publishable=&quot;true&quot; versetext=&quot;false&quot;&gt;
+                &lt;name&gt;h - File - Head [rest of string was truncated]&quot;;.
+             </summary>
+        </member>
+        <member name="P:SIL.DblBundle.Tests.Properties.Resources.versification_vrs">
+            <summary>
+              Looks up a localized resource of type System.Byte[].
+            </summary>
+        </member>
+        <member name="T:SIL.DblBundle.Tests.Text.TextBundleTests">
+            <summary>
+            Tests methods in the TextBundle class.
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Tests.Text.TextBundleTests.TestFixtureSetup">
+            <summary>
+            Setup test fixture.
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Tests.Text.TextBundleTests.TestFixtureTearDown">
+            <summary>
+            Tear down test fixture.
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Tests.Text.TextBundleTests.CreateBundle_PropertiesReadCorrectly">
+            <summary>
+            Tests that properties are correctly created in a bundle.
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Tests.Text.TextBundleTests.CreateBundle_ProperlyLoadsStylesheet">
+            <summary>
+            Tests that the stylesheet is loaded correctly from a bundle.
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Tests.Text.TextBundleTests.CreateBundle_ProperlyLoadsWritingSystemDefinition">
+            <summary>
+            Tests that writing system for a bundle is created correctly.
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Tests.Text.TextBundleTests.TryGetBook">
+            <summary>
+            Tests that a book is obtained from a bundle.
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Tests.Text.TextBundleTests.ContainsLdmlFile_FileExists_ReturnsTrue">
+            <summary>
+            Tests that a bundle with an LDML file correctly reports that.
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Tests.Text.TextBundleTests.ContainsLdmlFile_FileDoesNotExist_ReturnsFalse">
+            <summary>
+            Tests that a bundle without an LDML file correctly reports that.
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Tests.Text.TextBundleTests.ContainsInvalidUsxPath_ThrowsApplicationException">
+            <summary>
+            Tests that a bundle with an invalid USX path throws an exception.
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Tests.Text.TextBundleTests.CreateZippedTextBundleFromResources(System.Boolean,System.Boolean)">
+            <summary>
+            Helper method for tests to create a zipped text bundle.
+            </summary>
+        </member>
+        <member name="T:SIL.DblBundle.Tests.Usx.UsxDocumentTests">
+             <summary>
+             Tests the UsxDocument class.
+            
+             Note: This class also provides constants and helper methods which are used by Glyssen. They must remain public.
+             </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Tests.Usx.UsxDocumentTests.BookId_GetsBookIdFromBookNode">
+            <summary>
+            Tests getting a book id from a UsxDocument.
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Tests.Usx.UsxDocumentTests.GetChaptersAndParas_ReturnsOnlyChaptersAndParas">
+            <summary>
+            Tests getting chapters and paragraphs from a UsxDocument.
+            </summary>
+        </member>
+        <member name="T:SIL.DblBundle.Tests.Usx.UsxNodeTests">
+            <summary>
+            Tests the UsxNode class
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Tests.Usx.UsxNodeTests.TestFixtureSetUp">
+            <summary>
+            Test fixture setup
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Tests.Usx.UsxNodeTests.StyleTag_GetsCorrectStyleTagFromUsxNode">
+            <summary>
+            Tests that correct StyleTag is obtained from the UsxNode.
+            </summary>
+        </member>
+        <member name="M:SIL.DblBundle.Tests.Usx.UsxNodeTests.ChapterNumber_GetsCorrectStyleTagFromUsxChapter">
+            <summary>
+            Texts that the correct chapter number is obtained from the UsxChapter.
+            </summary>
+        </member>
+    </members>
+</doc>
